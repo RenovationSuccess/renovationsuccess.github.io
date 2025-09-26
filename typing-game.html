@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タイピングチャレンジ</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 55%),
+                        radial-gradient(circle at 80% 30%, rgba(236,72,153,0.25), transparent 60%),
+                        #0f172a;
+            padding: 2rem 1rem 4rem;
+            gap: 2rem;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin: 0;
+            text-align: center;
+            letter-spacing: 0.08em;
+            text-shadow: 0 8px 24px rgba(15, 23, 42, 0.6);
+        }
+
+        p.description {
+            max-width: 600px;
+            margin: 0;
+            text-align: center;
+            line-height: 1.8;
+            font-size: 1.05rem;
+            color: rgba(248, 250, 252, 0.85);
+        }
+
+        .game-card {
+            width: min(680px, 100%);
+            background-color: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: 24px;
+            padding: clamp(1.5rem, 4vw, 2.5rem);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(16px);
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            color: rgba(226, 232, 240, 0.85);
+        }
+
+        .quote {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            line-height: 1.7;
+            min-height: 4.5rem;
+            letter-spacing: 0.04em;
+            margin-bottom: 1.5rem;
+        }
+
+        .quote span {
+            padding: 0.1rem 0.05rem;
+            transition: color 0.2s ease, background 0.2s ease;
+        }
+
+        .quote span.correct {
+            color: #22c55e;
+        }
+
+        .quote span.incorrect {
+            color: #ef4444;
+            text-decoration: underline wavy;
+        }
+
+        .quote span.current {
+            position: relative;
+        }
+
+        .quote span.current::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -0.3rem;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #38bdf8, #6366f1);
+            border-radius: 2px;
+            animation: caret 0.9s ease infinite;
+        }
+
+        @keyframes caret {
+            0%, 60%, 100% { opacity: 0; }
+            30% { opacity: 1; }
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 130px;
+            padding: 1rem 1.1rem;
+            font-size: 1.05rem;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            background-color: rgba(15, 23, 42, 0.9);
+            color: #f8fafc;
+            resize: vertical;
+            outline: none;
+            box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: rgba(96, 165, 250, 0.6);
+            box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.4);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 0.9rem 1rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #0f172a;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 16px 32px rgba(56, 189, 248, 0.35);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .metric {
+            padding: 1rem;
+            border-radius: 16px;
+            background-color: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            text-align: center;
+        }
+
+        .metric .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-top: 0.4rem;
+        }
+
+        a.back-link {
+            color: rgba(248, 250, 252, 0.75);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        a.back-link:hover {
+            color: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+    <a class="back-link" href="index.html">&larr; アーカイブに戻る</a>
+    <h1>タイピングチャレンジ</h1>
+    <p class="description">スタートボタンを押すと、お仕事に役立つフレーズがランダムに表示されます。制限時間内に正確にタイピングして、あなたのスコアを更新しましょう！</p>
+
+    <div class="game-card" role="region" aria-live="polite">
+        <div class="status-row">
+            <span>残り時間: <strong id="time">60</strong> 秒</span>
+            <span>正確性: <strong id="accuracy">100</strong>%</span>
+        </div>
+
+        <div class="quote" id="quote" aria-label="タイピングする文章"></div>
+
+        <textarea id="input" placeholder="ここにタイピングしてください" aria-label="タイピング入力欄" disabled></textarea>
+        <button id="start">ゲームをスタート</button>
+
+        <div class="metrics">
+            <div class="metric">
+                <div>入力文字数</div>
+                <div class="value" id="chars">0</div>
+            </div>
+            <div class="metric">
+                <div>正解文字数</div>
+                <div class="value" id="correct">0</div>
+            </div>
+            <div class="metric">
+                <div>WPM</div>
+                <div class="value" id="wpm">0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const phrases = [
+            "顧客体験を起点にサービスを設計しよう",
+            "リノベーションの価値をデータで語れるように準備する",
+            "チームで共有できるプロジェクトボードを整備する",
+            "コンテンツ配信の自動化で時間を創出する",
+            "中長期の視点でブランドストーリーを磨き上げる",
+            "意思決定のスピードを上げるために情報の透明性を高める",
+            "ユーザーインタビューで顧客課題を深掘りする",
+            "施策の優先順位はインパクトと実現可能性で整理する",
+            "現場との対話を通じて改善の着想を蓄積する",
+            "小さな成功体験を積み重ねてチームの推進力を高める"
+        ];
+
+        const quoteEl = document.getElementById('quote');
+        const inputEl = document.getElementById('input');
+        const timeEl = document.getElementById('time');
+        const accuracyEl = document.getElementById('accuracy');
+        const charsEl = document.getElementById('chars');
+        const correctEl = document.getElementById('correct');
+        const wpmEl = document.getElementById('wpm');
+        const startBtn = document.getElementById('start');
+
+        let currentText = '';
+        let timerId = null;
+        let timeLeft = 60;
+        let totalTyped = 0;
+        let correctTyped = 0;
+        let gameStarted = false;
+
+        function renderQuote(text) {
+            quoteEl.innerHTML = '';
+            text.split('').forEach((char, index) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                if (index === 0) span.classList.add('current');
+                quoteEl.appendChild(span);
+            });
+        }
+
+        function setInitialState() {
+            timeEl.textContent = timeLeft;
+            accuracyEl.textContent = 100;
+            charsEl.textContent = 0;
+            correctEl.textContent = 0;
+            wpmEl.textContent = 0;
+        }
+
+        function resetGame() {
+            clearInterval(timerId);
+            timeLeft = 60;
+            totalTyped = 0;
+            correctTyped = 0;
+            inputEl.value = '';
+            inputEl.disabled = true;
+            inputEl.blur();
+            setInitialState();
+            quoteEl.innerHTML = '<span style="opacity:0.6;">スタートを押してゲームを始めよう</span>';
+            startBtn.textContent = 'ゲームをスタート';
+            startBtn.disabled = false;
+            gameStarted = false;
+        }
+
+        function startRound() {
+            clearInterval(timerId);
+            timeLeft = 60;
+            totalTyped = 0;
+            correctTyped = 0;
+            setInitialState();
+            currentText = phrases[Math.floor(Math.random() * phrases.length)];
+            renderQuote(currentText);
+            inputEl.value = '';
+            inputEl.disabled = false;
+            inputEl.focus();
+            startBtn.textContent = 'リセット';
+            gameStarted = true;
+            timerId = setInterval(() => {
+                timeLeft--;
+                timeEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            clearInterval(timerId);
+            inputEl.disabled = true;
+            startBtn.textContent = 'もう一度プレイ';
+            gameStarted = false;
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (gameStarted) {
+                resetGame();
+            } else {
+                startRound();
+            }
+        });
+
+        inputEl.addEventListener('input', () => {
+            if (!gameStarted) {
+                return;
+            }
+
+            const value = inputEl.value;
+            totalTyped = value.length;
+            charsEl.textContent = totalTyped;
+
+            const quoteChars = quoteEl.querySelectorAll('span');
+            correctTyped = 0;
+
+            quoteChars.forEach((span, index) => {
+                span.classList.remove('correct', 'incorrect', 'current');
+                const typedChar = value[index];
+                if (typedChar == null) {
+                    if (index === value.length) {
+                        span.classList.add('current');
+                    }
+                } else if (typedChar === span.textContent) {
+                    span.classList.add('correct');
+                    correctTyped++;
+                } else {
+                    span.classList.add('incorrect');
+                }
+            });
+
+            if (value.length < quoteChars.length) {
+                quoteChars[value.length]?.classList.add('current');
+            }
+
+            const accuracy = totalTyped === 0 ? 100 : Math.round((correctTyped / totalTyped) * 100);
+            accuracyEl.textContent = accuracy;
+            correctEl.textContent = correctTyped;
+
+            const elapsed = 60 - timeLeft;
+            const words = totalTyped / 5;
+            const minutes = elapsed > 0 ? elapsed / 60 : 1 / 60;
+            const wpm = Math.max(0, Math.round(words / minutes));
+            wpmEl.textContent = wpm;
+
+            if (value === currentText) {
+                endGame();
+            }
+        });
+
+        resetGame();
+    </script>
+</body>
+</html>

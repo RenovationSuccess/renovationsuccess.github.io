@@ -4,14 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>メルマガアーカイブ</title>
+    <style>
+        body {
+            font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+            margin: 0;
+            padding: 2rem 1.5rem 4rem;
+            background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #1e293b;
+        }
+
+        header {
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 0.5rem;
+        }
+
+        p.lead {
+            font-size: 1.1rem;
+            margin: 0 auto 1.5rem;
+            line-height: 1.8;
+            color: #334155;
+            max-width: 680px;
+        }
+
+        .cards {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .card p {
+            margin: 0;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .card a {
+            margin-top: auto;
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .card a::after {
+            content: '→';
+            transition: transform 0.2s ease;
+        }
+
+        .card a:hover::after {
+            transform: translateX(4px);
+        }
+    </style>
 </head>
 <body>
-    <h1>メルマガアーカイブ</h1>
-    <p>こちらはメルマガアーカイブのページです。</p>
-    <ul>
-        <li><a href="mail1.html">リノベーションのROIを最大化するための戦略</a></li>
-        <li><a href="mail2.html">リノベーション後の効果的なプロモーション方法</a></li>
-        <!-- 他のメルマガへのリンクも追加できます -->
-    </ul>
+    <header>
+        <h1>メルマガアーカイブ</h1>
+        <p class="lead">リノベーション事業に役立つナレッジやヒントをアーカイブしています。最新のメールから読みたいトピックを選んでください。</p>
+    </header>
+
+    <section class="cards">
+        <article class="card">
+            <h2>タイピングチャレンジ</h2>
+            <p>お仕事のキーフレーズをタイピングしながら、正確性とスピードを測定しましょう。60秒でどこまで正確に入力できるか挑戦できます。</p>
+            <a href="typing-game.html">ゲームをプレイ</a>
+        </article>
+        <article class="card">
+            <h2>リノベーションのROIを最大化するための戦略</h2>
+            <p>投資対効果を高めるための意思決定プロセスと、成果を測るKPI設計の考え方をまとめました。</p>
+            <a href="mail1.html">読む</a>
+        </article>
+        <article class="card">
+            <h2>リノベーション後の効果的なプロモーション方法</h2>
+            <p>完成後の集客を加速させるためのオウンドメディア活用やSNSキャンペーンの実践例を紹介します。</p>
+            <a href="mail2.html">読む</a>
+        </article>
+    </section>
 </body>
 </html>
